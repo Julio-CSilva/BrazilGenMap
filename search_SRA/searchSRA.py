@@ -6,7 +6,7 @@ from Bio import Entrez
 #e-mail para usar a API.
 Entrez.email = os.getenv("NCBI_EMAIL")
 DB_TARGET = "sra"
-OUTPUT_FILE = "resultados_busca_sra.csv"
+OUTPUT_FILE = "results/resultados_busca_sra.csv"
 
 termos_doencas = [
     '"Neoplasms"[MeSH Terms]',
