@@ -1,0 +1,52 @@
+name: BrazilGenMap
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1=conda_forge
+  - _openmp_mutex=4.5=2_gnu
+  - biopython=1.85=py313h07c4f96_2
+  - brotlicffi=1.2.0.0=py313h7354ed3_0
+  - bzip2=1.0.8=h4bc722e_7
+  - ca-certificates=2026.1.4=hbd8a1cb_0
+  - certifi=2026.01.04=py313h06a4308_0
+  - cffi=2.0.0=py313h4eded50_1
+  - charset-normalizer=3.4.4=py313h06a4308_0
+  - idna=3.11=py313h06a4308_0
+  - ld_impl_linux-64=2.44=h1423503_1
+  - libblas=3.9.0=35_h59b9bed_openblas
+  - libcblas=3.9.0=35_he106b2a_openblas
+  - libexpat=2.7.1=hecca717_0
+  - libffi=3.4.6=h2dba641_1
+  - libgcc=15.1.0=h767d61c_4
+  - libgcc-ng=15.1.0=h69a702a_4
+  - libgfortran=15.1.0=h69a702a_4
+  - libgfortran5=15.1.0=hcea5267_4
+  - libgomp=15.1.0=h767d61c_4
+  - liblapack=3.9.0=35_h7ac8fdf_openblas
+  - liblzma=5.8.1=hb9d3cd8_2
+  - libmpdec=4.0.0=hb9d3cd8_0
+  - libopenblas=0.3.30=pthreads_h94d23a6_2
+  - libsqlite=3.50.4=h0c1763c_0
+  - libstdcxx=15.1.0=h8f9b012_4
+  - libuuid=2.38.1=h0b41bf4_0
+  - libzlib=1.3.1=hb9d3cd8_2
+  - ncurses=6.5=h2d0b736_3
+  - numpy=2.3.2=py313hf6604e3_2
+  - openssl=3.6.1=h35e630c_1
+  - pandas=3.0.0=py313hbfd7664_0
+  - pip=25.2=pyh145f28c_0
+  - pycparser=2.23=py313h06a4308_0
+  - pysocks=1.7.1=py313h06a4308_1
+  - python=3.13.7=h2b335a9_100_cp313
+  - python-dateutil=2.9.0.post0=pyhe01879c_2
+  - python_abi=3.13=8_cp313
+  - readline=8.2=h8c095d6_2
+  - requests=2.32.5=py313h06a4308_1
+  - six=1.17.0=pyhe01879c_1
+  - tk=8.6.13=noxft_hd72426e_102
+  - tzdata=2025b=h78e105d_0
+  - urllib3=2.6.3=py313h06a4308_0
+  - pip:
+      - python-dotenv==1.2.1
+prefix: /home/jlc-pc-wsl/miniconda3/envs/BrazilGenMap
