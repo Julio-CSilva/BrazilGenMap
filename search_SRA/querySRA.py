@@ -110,7 +110,7 @@ def extract_and_save_sra_metadata(sra_ids):
         return
 
     df = pd.DataFrame(all_records)
-    output_filename = "../results/sra_metadata.csv"
+    output_filename = os.getenv("OUTPUT_FILE_LIST_METADATA")
     df.to_csv(output_filename, index=False, encoding='utf-8-sig')
     
     print(f"\n✅ Sucesso! {len(all_records)} registro(s) foram extraídos de {total_ids} IDs consultados.")
