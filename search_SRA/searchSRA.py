@@ -8,8 +8,26 @@ from Bio import Entrez
 #e-mail para usar a API.
 load_dotenv()
 Entrez.email = os.getenv("NCBI_EMAIL")
+Entrez.api_key = os.getenv("NCBI_API_KEY")  # opcional; aumenta o limite de taxa do NCBI
+Entrez.tool = "BrazilGenMap"
 DB_TARGET = "sra"
 OUTPUT_FILE = os.getenv("OUTPUT_FILE_LIST_SRA")
+
+if not Entrez.email:
+    raise EnvironmentError(
+        "A variável de ambiente 'NCBI_EMAIL' não está definida. "
+        "O NCBI exige um e-mail de contato. Configure-a no arquivo .env."
+    )
+if not OUTPUT_FILE:
+    raise EnvironmentError(
+        "A variável de ambiente 'OUTPUT_FILE_LIST_SRA' não está definida. "
+        "Configure-a no arquivo .env."
+    )
+
+#Garante que o diretório de saída exista antes de escrever.
+output_dir = os.path.dirname(OUTPUT_FILE)
+if output_dir:
+    os.makedirs(output_dir, exist_ok=True)
 
 termos_doencas = [
     'Neoplasms[MeSH Terms]',

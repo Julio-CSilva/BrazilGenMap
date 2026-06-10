@@ -36,8 +36,14 @@ def extract_and_save_sra_metadata(sra_ids):
     
     api_key = os.getenv("NCBI_API_KEY")
     if not api_key:
-        print("Erro: A chave da API do NCBI não está definida. Por favor, configure a variável de ambiente 'NCBI_API_KEY'.")
-    
+        print(
+            "Aviso: A chave 'NCBI_API_KEY' não está definida. As requisições seguirão "
+            "sem chave, com limite de taxa menor (3 req/s) imposto pelo NCBI."
+        )
+
+    # Sem chave o NCBI permite no máximo 3 req/s; com chave, até 10 req/s.
+    request_delay = 0.11 if api_key else 0.34
+
     all_records = []
     total_ids = len(sra_ids)
 
@@ -50,7 +56,7 @@ def extract_and_save_sra_metadata(sra_ids):
         params = {"db": "sra", "id": current_id, "api_key": api_key}
 
         try:
-            response = requests.get(base_url, params=params)
+            response = requests.get(base_url, params=params, timeout=60)
             response.raise_for_status() # Verifica se houve erro na requisição (ex: 404)
             
             root = ET.fromstring(response.content)
@@ -93,7 +99,7 @@ def extract_and_save_sra_metadata(sra_ids):
                 
                 all_records.append(record)
 
-            time.sleep(0.2) 
+            time.sleep(request_delay)
 
         except requests.exceptions.RequestException as e:
             print(f"  ❌ Falha na conexão para o ID {current_id}: {e}")
@@ -111,10 +117,20 @@ def extract_and_save_sra_metadata(sra_ids):
 
     df = pd.DataFrame(all_records)
     output_filename = os.getenv("OUTPUT_FILE_LIST_METADATA")
+    if not output_filename:
+        print("Erro: A variável de ambiente 'OUTPUT_FILE_LIST_METADATA' não está definida.")
+        return
+
+    output_dir = os.path.dirname(output_filename)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
+
     df.to_csv(output_filename, index=False, encoding='utf-8-sig')
-    
+
     print(f"\n✅ Sucesso! {len(all_records)} registro(s) foram extraídos de {total_ids} IDs consultados.")
     print(f"💾 Os dados foram salvos no arquivo: '{output_filename}'")
 
-sra_codes = qsra.concat()
-extract_and_save_sra_metadata(sra_codes)
+
+if __name__ == "__main__":
+    sra_codes = qsra.concat()
+    extract_and_save_sra_metadata(sra_codes)

@@ -1,83 +1,112 @@
 # BrazilGenMap
 
-Este repositório contém um conjunto de ferramentas para minerar e recuperar metadados de sequenciamento genômico do banco de dados **SRA (Sequence Read Archive)** do NCBI. O foco principal é identificar dados relacionados a neoplasias e câncer associados a instituições e pesquisas no Brasil.
+**🌐 Language:** **English** | [Português (BR)](README.pt-BR.md)
 
-## 📂 Estrutura do Repositório
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/)
 
-- **search_SRA/**: Contém os scripts Python para busca e recuperação de dados.
-  - `searchSRA.py`: Realiza buscas no NCBI combinando termos de doenças (ex: Cancer, Melanoma) com termos de localização/instituições brasileiras. Gera um arquivo CSV com os resultados.
-  - `concat.py`: Processa o CSV gerado pelo script anterior para extrair e identificar IDs únicos do SRA (`id_sra`).
-  - `querySRA.py`: Automaticamente roda o script `concat.py` e com o resultado consulta a API do NCBI para baixar metadados detalhados de cada amostra.
-- **results/**: Diretório destinado ao armazenamento dos arquivos de saída (`.csv`).
-- **environment.yml**: Arquivo de configuração para criação do ambiente Conda.
+A toolkit to mine and retrieve genomic sequencing metadata from NCBI's
+**SRA (Sequence Read Archive)** database. Its main goal is to identify
+neoplasm- and cancer-related data associated with Brazilian institutions
+and research groups.
 
 ---
 
-## 🚀 Instalação e Configuração
+## 📂 Repository Structure
 
-### 1. Pré-requisitos
-Certifique-se de ter o [Anaconda](https://www.anaconda.com/) ou [Miniconda](https://docs.conda.io/en/latest/miniconda.html) instalado em seu sistema.
+- **search_SRA/** — Python scripts for searching and retrieving data.
+  - `searchSRA.py` — Searches NCBI by combining disease terms (e.g. Cancer,
+    Melanoma) with Brazilian location/institution terms. Produces a CSV with
+    the results.
+  - `concat.py` — Processes the CSV from the previous step to extract the
+    unique SRA IDs.
+  - `querySRA.py` — Uses `concat.py` to obtain the unique IDs and queries the
+    NCBI API to download detailed metadata for each sample.
+- **results/** — Output directory for the generated `.csv` files (git-ignored).
+- **environment.yml** — Conda environment definition.
+- **.env.example** — Template for the required environment variables.
 
-### 2. Clonar o Repositório
+---
+
+## 🚀 Installation & Setup
+
+### 1. Prerequisites
+Make sure you have [Anaconda](https://www.anaconda.com/) or
+[Miniconda](https://docs.conda.io/en/latest/miniconda.html) installed.
+
+### 2. Clone the repository
 ```bash
 git clone https://github.com/Julio-CSilva/BrazilGenMap.git
 cd BrazilGenMap
 ```
 
-### 3. Criar o Ambiente Conda
-Utilize o arquivo `environment.yml` fornecido para criar o ambiente com todas as dependências necessárias (BioPython, Pandas, etc.).
+### 3. Create the Conda environment
+Use the provided `environment.yml` to create the environment with all
+dependencies (BioPython, Pandas, etc.):
 
 ```bash
 conda env create -f environment.yml
-```
-
-Ative o ambiente:
-```bash
 conda activate BrazilGenMap
 ```
 
-### 4. Configuração de Variáveis de Ambiente (.env)
-Para que os scripts funcionem corretamente e tenham acesso à API do NCBI, você deve criar um arquivo `.env` na raiz do projeto ou dentro da pasta `search_SRA` (dependendo de onde executar, mas recomenda-se na raiz para organização), contendo as seguintes chaves:
+### 4. Configure environment variables (`.env`)
+The scripts read their configuration from a `.env` file. Copy the template
+and fill in your own values:
 
-Crie um arquivo chamado `.env` e adicione:
-
-```env
-NCBI_EMAIL=seu_email@exemplo.com
-NCBI_API_KEY=sua_chave_api_ncbi
-OUTPUT_FILE_LIST_SRA=/caminho/completo/para/BrazilGenMap/results/resultados_busca_sra.csv
-OUTPUT_FILE_LIST_METADATE=/caminho/completo/para/BrazilGenMap/results/resultados_metadados.csv
+```bash
+cp .env.example .env
 ```
 
-> **Nota**: `OUTPUT_FILE_LIST_SRA` define onde o script `searchSRA.py` salvará os resultados iniciais e de onde `concat.py` os lerá. Recomenda-se usar o caminho absoluto ou relativo para a pasta `results`.
+| Variable | Required | Description |
+| --- | --- | --- |
+| `NCBI_EMAIL` | ✅ | Contact e-mail required by the NCBI Entrez API. |
+| `NCBI_API_KEY` | ⬜ optional | NCBI API key. Raises the rate limit from 3 to 10 requests/second. [Generate one here](https://www.ncbi.nlm.nih.gov/account/settings/). |
+| `OUTPUT_FILE_LIST_SRA` | ✅ | Path where `searchSRA.py` writes results and `concat.py` reads them. |
+| `OUTPUT_FILE_LIST_METADATA` | ✅ | Path where `querySRA.py` writes the extracted metadata. |
+
+Example `.env`:
+
+```env
+NCBI_EMAIL=your_email@example.com
+NCBI_API_KEY=your_ncbi_api_key
+OUTPUT_FILE_LIST_SRA=results/resultados_busca_sra.csv
+OUTPUT_FILE_LIST_METADATA=results/sra_metadata.csv
+```
+
+> ⚠️ **Never commit your `.env` file.** It is listed in `.gitignore` and
+> contains your personal API key. If a key is ever exposed, revoke and
+> regenerate it from your NCBI account settings.
 
 ---
 
-## 🛠️ Como Executar
+## 🛠️ Usage
 
-A execução deve seguir uma ordem lógica para obter o fluxo completo dos dados.
+Run the steps in order to get the full data flow.
 
-### Passo 1: Busca de IDs no SRA
-O script `searchSRA.py` realiza combinações de termos (Doenças x Instituições Brasileiras) e salva os resultados.
+### Step 1 — Search SRA IDs
+`searchSRA.py` combines disease × institution × organism terms and saves the
+results.
 
 ```bash
 cd search_SRA
 python searchSRA.py
 ```
-**Resultado**: Um arquivo CSV (definido em `OUTPUT_FILE_LIST_SRA`) contendo as buscas e os IDs encontrados.
+**Output:** a CSV (defined by `OUTPUT_FILE_LIST_SRA`) with the searches and the
+IDs found.
 
-### Passo 2: Processamento e Extração de Metadados
-O script `querySRA.py` utiliza a lógica do `concat.py` para obter os IDs únicos e buscar seus metadados.
-
- Execute o script:
+### Step 2 — Process IDs & extract metadata
+`querySRA.py` uses `concat.py` to obtain the unique IDs and fetches their
+metadata.
 
 ```bash
 python querySRA.py
 ```
+**Output:** a CSV (defined by `OUTPUT_FILE_LIST_METADATA`) with detailed
+information such as BioProject, organism, library strategy, submitting center,
+study title, etc.
 
-**Resultado**: Um arquivo `sra_metadata.csv` será gerado na pasta `results/` contendo informações detalhadas como Bioproject, Organismo, Data de Publicação, Instituição, etc.
-
-### (Opcional) Verificação de IDs Únicos
-Se desejar apenas ver a lista de IDs únicos encontrados sem fazer a busca de metadados, você pode executar o script auxiliar:
+### (Optional) Inspect unique IDs
+To only list the unique IDs found, without fetching metadata:
 
 ```bash
 python concat.py
@@ -85,17 +114,51 @@ python concat.py
 
 ---
 
-## 📋 Detalhes dos Scripts
+## 📋 Script Details
 
 ### `searchSRA.py`
-Consulta o banco de dados `sra` usando `Bio.Entrez`. Ele itera sobre listas de termos (`termos_doencas` e `termos_localizacao`) para encontrar submissões brasileiras relevantes.
+Queries the `sra` database via `Bio.Entrez`. It iterates over the
+`termos_doencas` (diseases) and `termos_localizacao` (locations) lists to find
+relevant Brazilian submissions. Sets the NCBI `email`, `api_key`, and `tool`
+identifiers as recommended by NCBI.
 
 ### `concat.py`
-Lê o arquivo de saída do passo anterior, separa os IDs (que podem vir agrupados por ponto e vírgula), remove duplicatas e retorna uma lista limpa de inteiros.
+Reads the previous step's output, splits semicolon-grouped IDs, drops
+duplicates, and returns a clean list of integers. Exposes a single `concat()`
+function so it can be imported without side effects.
 
 ### `querySRA.py`
-O script principal de recuperação de dados.
-1. Carrega os IDs via `concat.py`.
-2. Para cada ID, faz uma requisição `efetch` ao NCBI.
-3. Faz o parsing do XML retornado para extrair atributos específicos.
-4. Salva tudo em um CSV consolidado.
+The main retrieval script:
+1. Loads the IDs via `concat.py`.
+2. Sends an `efetch` request to NCBI for each ID (with a network timeout and
+   rate-aware throttling).
+3. Parses the returned XML to extract specific attributes.
+4. Saves everything to a consolidated CSV.
+
+---
+
+## 🔐 Security & Best Practices
+
+- **Secrets stay out of git.** Credentials live only in `.env`, which is
+  git-ignored. The repository ships an `.env.example` template instead.
+- **Rate limiting.** The scripts respect NCBI's request limits (3 req/s
+  without an API key, up to 10 req/s with one) to avoid being throttled or
+  blocked.
+- **Network timeouts.** HTTP requests use an explicit timeout so a hanging
+  connection won't freeze a run.
+- **Trusted data source.** XML is parsed only from NCBI responses. If you ever
+  adapt these scripts to parse XML from untrusted sources, consider using
+  [`defusedxml`](https://pypi.org/project/defusedxml/) to mitigate XML-based
+  attacks.
+- **Public data only.** This project handles publicly available SRA metadata;
+  no patient-level or personally identifiable data is processed.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to open an issue or submit a pull request.
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).

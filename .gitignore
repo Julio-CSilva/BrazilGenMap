@@ -1,3 +1,22 @@
+# Environment / secrets
 .env
-results/resultados_busca_sra.csv
-results/sra_metadata.csv
+.env.local
+
+# Generated results
+results/*.csv
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Conda / virtual envs
+.venv/
+env/
+venv/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
