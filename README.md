@@ -4,6 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20634570.svg)](https://doi.org/10.5281/zenodo.20634570)
 
 A toolkit to mine and retrieve genomic sequencing metadata from NCBI's
 **SRA (Sequence Read Archive)** database. Its main goal is to identify
