@@ -6,8 +6,7 @@
 [![Python 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20634570.svg)](https://doi.org/10.5281/zenodo.20634570)
 
-A toolkit to mine and retrieve genomic sequencing metadata from NCBI's
-**SRA (Sequence Read Archive)** database. Its main goal is to identify
+A repository for searching and analyzing genetic variants from sequencing data. Its main goal is to identify
 neoplasm- and cancer-related data associated with Brazilian institutions
 and research groups.
 
@@ -24,12 +23,19 @@ and research groups.
   - `querySRA.py` — Uses `concat.py` to obtain the unique IDs and queries the
     NCBI API to download detailed metadata for each sample.
 - **results/** — Output directory for the generated `.csv` files (git-ignored).
+- **alignment_and_QC/**
+   -`controlQuality_and_alignment.sh` — Aligns raw data sequences and performs quality control on the samples.
+- **variant_calling/**
+  - `deepvariant_calling` — Performs variant calling on the aligned samples using the DeepVariant tool.
+  - `mpileup` — Mpileup, a SAMtools command-line tool, provides a summary of the coverage of the mapped reads.
+- **annotation/**
+  - `annotation_pipeline` — A customized pipeline for functional annotation of the generated VCFs.
 - **environment.yml** — Conda environment definition.
 - **.env.example** — Template for the required environment variables.
 
 ---
 
-## 🚀 Installation & Setup
+## 🚀 Installation & Setup For The "search_SRA" step
 
 ### 1. Prerequisites
 Make sure you have [Anaconda](https://www.anaconda.com/) or
