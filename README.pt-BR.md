@@ -23,12 +23,19 @@ instituições e pesquisas no Brasil.
   - `querySRA.py` — Usa o `concat.py` para obter os IDs únicos e consulta a API
     do NCBI para baixar metadados detalhados de cada amostra.
 - **results/** — Diretório de saída dos arquivos `.csv` gerados (ignorado pelo git).
+- **alignment_and_QC/**
+  - `controlQuality_and_alignment.sh` — Alinha as sequências dos dados brutos e realiza o controle de qualidade das amostras.
+- **variant_calling/**
+  - `deepvariant_calling` — Executa a chamada de variantes das amostras alinhadas através da ferramenta DeepVariant.
+  - `mpileup` — Mpileup, uma ferramenta de linha de comando do SAMtools, fornece um relatório sobre a cobertura das reads mapeadas.
+- **annotation/**
+  - `annotation_pipeline` — Uma pipeline customizada para anotação funcional dos VCFs gerados.
 - **environment.yml** — Definição do ambiente Conda.
 - **.env.example** — Modelo das variáveis de ambiente necessárias.
 
 ---
 
-## 🚀 Instalação e Configuração
+## 🚀 Instalação e Configuração da Etapa "search_SRA"
 
 ### 1. Pré-requisitos
 Tenha o [Anaconda](https://www.anaconda.com/) ou
