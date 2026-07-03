@@ -1,0 +1,50 @@
+##################### CUSTOMIZED ANNOTATION PIPELINE #####################
+
+
+# Softwares and datbases:
+# /storages/macaiba/danielh/exome/softwares
+# /storages/macaiba/danielh/exome/bancos
+
+----------------------------------------------------------------------------
+
+#1. Clinvar
+
+cat file.vcf | java -jar /path/to/snpEff/SnpSift.jar annotate /path/to/clinvar.vcf.gz > result_1.vcf
+
+# 2. Cosmic
+
+java -jar /path/to/snpEff/SnpSift.jar annotate /path/to/CosmicCodingMuts.vcf.gz result_1.vcf > result_2.vcf
+
+# 3. vcfsort
+
+vcf-sort result_2.vcf | java -jar /path/to/snpEff/snpEff.jar eff -noLog -noStats -lof -classic -hgvs -canon -ud 0 hg38 - > result_3.vcf
+
+# 4. dbnsfp
+
+java -jar /path/to/snpEff/SnpSift.jar dbnsfp -f SIFT_pred,SIFT4G_pred,Polyphen2_HDIV_pred,Polyphen2_HVAR_pred,LRT_pred,MutationTaster_pred,MutationAssessor_pred,FATHMM_pred,PROVEAN_pred,MetaSVM_pred,MetaLR_pred,M-CAP_pred,PrimateAI_pred,DEOGEN2_pred,BayesDel_addAF_pred,BayesDel_noAF_pred,ClinPred_pred,LIST-S2_pred,Aloft_pred,fathmm-MKL_coding_pred,fathmm-XF_coding_pred,clinvar_id,clinvar_clnsig,clinvar_trait,clinvar_review,clinvar_hgvs,clinvar_var_source,clinvar_MedGen_id,clinvar_OMIM_id,clinvar_Orphanet_id,ExAC_AF,1000Gp3_AC,1000Gp3_AF,1000Gp3_AFR_AC,1000Gp3_AFR_AF,1000Gp3_EUR_AC,1000Gp3_EUR_AF,1000Gp3_AMR_AC,1000Gp3_AMR_AF,1000Gp3_EAS_AC,1000Gp3_EAS_AF,1000Gp3_SAS_AC,1000Gp3_SAS_AF,HGVSp_ANNOVAR,Ensembl_transcriptid,gnomAD_genomes_AF,gnomAD_genomes_POPMAX_AF,VEST4_score,PROVEAN_score,PROVEAN_converted_rankscore,fathmm-XF_coding_score,gnomAD_exomes_AF,gnomAD_exomes_AFR_AF,gnomAD_exomes_AMR_AF,gnomAD_exomes_ASJ_AF,gnomAD_exomes_EAS_AF,gnomAD_exomes_FIN_AF,gnomAD_exomes_NFE_AF,gnomAD_exomes_SAS_AF,gnomAD_exomes_POPMAX_AF,gnomAD_exomes_controls_AF,gnomAD_exomes_controls_AFR_AF,gnomAD_exomes_controls_AMR_AF,gnomAD_exomes_controls_ASJ_AF,gnomAD_exomes_controls_EAS_AF,gnomAD_exomes_controls_FIN_AF,gnomAD_exomes_controls_NFE_AF,gnomAD_exomes_controls_SAS_AF,gnomAD_exomes_controls_POPMAX_AF,gnomAD_genomes_AF,gnomAD_genomes_AFR_AF,gnomAD_genomes_AMR_AF,gnomAD_genomes_ASJ_AF,gnomAD_genomes_EAS_AF,gnomAD_genomes_FIN_AF,gnomAD_genomes_NFE_AF,gnomAD_genomes_AMI_AF,gnomAD_genomes_SAS_AF,gnomAD_genomes_POPMAX_AF -v -a -db /data/home/danielh/app/Projetos-Bioinfo-back-end/db/dbNSFP4.1a.txt.gz result_3.vcf  > result_4.vcf
+
+# 5. BRCA
+
+java -jar /path/to/snpEff/SnpSift.jar annotate /path/to/BRCA1.findaly_hg38.vcf.gz result_4.vcf > result_5.vcf
+
+# 6. Alphamissense
+
+java -jar /path/to/snpEff/SnpSift.jar annotate /path/to/alpha.vcf.gz result_5.vcf > result_6.vcf
+
+# 7. ExAC
+
+java -jar /path/to/snpEff/SnpSift.jar annotate /path/to/Exac_jan19.vcf.gz result_6.vcf > result_7.vcf
+
+# 8. ABraOM
+
+java -jar /path/to/snpEff/SnpSift.jar annotate /path/to/ABRaOM_exomes_hg38.vcf.gz result_7.vcf > result_8.vcf
+
+# 9. Customized anonymization (Perl)
+
+/path/to/anon.pl result_8.vcf result_9.vcf
+
+# 10. dbsnp
+
+java -jar /path/to/snpEff/SnpSift.jar annotate -d /path/to/dbSNP151.hg38.vcf.gz result_9.vcf | gzip > result_10.vcf.gz
+
+----------------------------------------------------------------------------
