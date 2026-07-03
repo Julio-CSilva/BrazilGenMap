@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+# Verifica se o argumento foi passado
+if [ -z "$1" ]; then
+    echo "Informe o arquivo de amostras: $0 <sample.txt>"
+    exit 1
+fi
+
+input_file="$1"
+
+# Garante que o arquivo existe
+if [ ! -f "$input_file" ]; then
+    echo "Arquivo '$input_file' não encontrado."
+    exit 1
+fi
+
+# Loop pelos IDs no arquivo
+for i in $(tr -d '\r' < "$input_file"); do
+
+    output_dir="/path/to/alignment/results/${i}"
+    cd "$output_dir"
+
+    mkdir -p "/path/to/results_callvariants_deepvariants_WGS/${i}"
+    echo "Chama de variantes deepvariants, utilizando modelo de WGS usuários já reportaram que o modelo WGS tende a \
+    funcionar melhor para amplicon que o WES, pois tem maior tolerância a cobertura alta e profundidade extrema. \
+    Por padrão, DeepVariant usa todas as bases com qualidade ≥10. Você pode aumentar, por exemplo, para 20:" \
+    > /path/to/results_callvariants_deepvariants_WGS/info.txt
+
+    rm "${i}_callVariants_deepvariants.log.txt"
+    log_file="${output_dir}/${i}_callVariants_deepvariants.log.txt"
+    echo "[$(date)] Início do processamento da amostra ${i}" | tee -a "$log_file"
+    {
+        BIN_VERSION="1.8.0"
+
+        docker run \
+          -v "/path/to/project/":"/path/to/project/" \
+          -v "/path/to/reference/databases/":"/path/to/reference/databases/" \
+          -v "/path/to/other/databases/":"/path/to/other/databases/" \
+          -v "/path/to/global/directory/":"/path/to/global/directory/" \
+          google/deepvariant:"${BIN_VERSION}" \
+          /opt/deepvariant/bin/run_deepvariant \
+          --model_type=WGS \
+          --ref="/path/to/genome/reference/Homo_sapiens_assembly38.fasta" \
+          --reads="/path/to/alignment/results/${i}/output.bqsr.bam" \
+          --output_vcf="/path/to/variant/calling/results_callvariants_deepvariants_WGS/${i}/${i}.vcf" \
+          --output_gvcf="/path/to/variant/calling/results_callvariants_deepvariants_WGS/${i}/${i}.g.vcf" \
+          --num_shards=40 \
+          --vcf_stats_report=true \
+          --disable_small_model=true \
+          --logging_dir="/path/to/variant/calling/results_callvariants_deepvariants_WGS/${i}/${i}" \
+          --regions="/path/to/interval/bed/file/cleaned_intervals_hg38.bed"
+
+    } >> "$log_file" 2>&1
+
+    echo "[$(date)] Finalizado o processamento da amostra ${i}" | tee -a "$log_file"
+    echo "---------------------------------------" | tee -a "$log_file"
+
+done
