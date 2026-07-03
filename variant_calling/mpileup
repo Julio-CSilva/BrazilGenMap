@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+output_dir="/path/to/mpileup/results_mpileup_qb0"
+cd "$output_dir" || { echo "Erro ao entrar no diretório $output_dir"; exit 1; }
+
+ln -s /path/to/bed/file/cleaned_intervals_hg38.bed
+ln -s /path/to/genome/reference/Homo_sapiens_assembly38.fasta
+
+for i in $(tr -d '\r' < sra_list.txt)
+do
+
+
+    samtools mpileup --verbosity 3 -Q 0 -l cleaned_intervals_hg38.bed \
+    -f Homo_sapiens_assembly38.fasta -s /path/to/alignment/results/${i}/output.bqsr.bam > \
+    /path/to/mpileup/results_mpileup_qb0/result_${i}_mpileup.plp
+
+done
