@@ -5,6 +5,15 @@ from dotenv import load_dotenv
 from Bio import Entrez
 
 
+def sanitize_csv_value(value):
+    """Neutraliza injeção de fórmulas (CSV injection) prefixando com aspa simples
+    valores iniciados por caracteres interpretados como fórmula por planilhas."""
+    text = str(value)
+    if text[:1] in ('=', '+', '-', '@', '\t', '\r'):
+        return "'" + text
+    return text
+
+
 #e-mail para usar a API.
 load_dotenv()
 Entrez.email = os.getenv("NCBI_EMAIL")
@@ -110,12 +119,12 @@ with open(OUTPUT_FILE, mode='w', newline='', encoding='utf-8') as f:
                         print(f"-> Encontrados: {count} resultados.")
 
                         #Escreve a linha no arquivo CSV
-                        writer.writerow([query, count, id_list_str])
+                        writer.writerow([sanitize_csv_value(v) for v in (query, count, id_list_str)])
 
                     except Exception as e:
                         #Em caso de erro na requisição, registra o erro no CSV
                         print(f"!! Ocorreu um erro na requisição: {e}")
-                        writer.writerow([query, 0, f"ERRO: {e}"])
+                        writer.writerow([sanitize_csv_value(v) for v in (query, 0, f"ERRO: {e}")])
 
                     time.sleep(1)
 

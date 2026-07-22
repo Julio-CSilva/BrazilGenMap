@@ -6,12 +6,18 @@ cd "$output_dir" || { echo "Erro ao entrar no diretório $output_dir"; exit 1; }
 ln -s /path/to/bed/file/cleaned_intervals_hg38.bed
 ln -s /path/to/genome/reference/Homo_sapiens_assembly38.fasta
 
-for i in $(tr -d '\r' < sra_list.txt)
+while IFS= read -r i
 do
-
+    i="${i//$'\r'/}"
+    [ -n "$i" ] || continue
+    # Valida o ID para evitar path traversal / injeção via nome de arquivo.
+    if ! [[ "$i" =~ ^[A-Za-z0-9_]+$ ]]; then
+        echo "ID inválido ignorado: '$i'" >&2
+        continue
+    fi
 
     samtools mpileup --verbosity 3 -Q 0 -l cleaned_intervals_hg38.bed \
-    -f Homo_sapiens_assembly38.fasta -s /path/to/alignment/results/${i}/output.bqsr.bam > \
-    /path/to/mpileup/results_mpileup_qb0/result_${i}_mpileup.plp
+    -f Homo_sapiens_assembly38.fasta -s "/path/to/alignment/results/${i}/output.bqsr.bam" > \
+    "/path/to/mpileup/results_mpileup_qb0/result_${i}_mpileup.plp"
 
-done
+done < sra_list.txt

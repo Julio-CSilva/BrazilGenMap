@@ -49,4 +49,5 @@ dependencies:
   - urllib3=2.6.3=py313h06a4308_0
   - pip:
       - python-dotenv==1.2.1
+      - defusedxml==0.7.1
 prefix: /home/jlc-pc-wsl/miniconda3/envs/BrazilGenMap

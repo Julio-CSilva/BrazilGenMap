@@ -1,12 +1,28 @@
 import requests
 import concat as qsra
-import xml.etree.ElementTree as ET
+import defusedxml.ElementTree as ET
 from dotenv import load_dotenv
 import pandas as pd
 import time
 import os
 
 load_dotenv()  # Carrega as variáveis de ambiente do arquivo .env
+
+
+def _redact(text, secret):
+    """Remove a chave de API de mensagens de erro antes de exibi-las/logá-las."""
+    return text.replace(secret, "***") if secret else text
+
+
+def sanitize_csv_value(value):
+    """Neutraliza injeção de fórmulas (CSV injection) prefixando com aspa simples
+    valores iniciados por caracteres interpretados como fórmula por planilhas.
+    Os metadados do SRA são texto livre submetido por terceiros e não confiável."""
+    text = str(value)
+    if text[:1] in ('=', '+', '-', '@', '\t', '\r'):
+        return "'" + text
+    return text
+
 
 def safe_get_text(element, path, attribute=None):
     """
@@ -102,13 +118,13 @@ def extract_and_save_sra_metadata(sra_ids):
             time.sleep(request_delay)
 
         except requests.exceptions.RequestException as e:
-            print(f"  ❌ Falha na conexão para o ID {current_id}: {e}")
+            print(f"  ❌ Falha na conexão para o ID {current_id}: {_redact(str(e), api_key)}")
             continue # Pula para o próximo ID
         except ET.ParseError as e:
             print(f"  ❌ Falha ao processar XML para o ID {current_id}: {e}")
             continue # Pula para o próximo ID
         except Exception as e:
-            print(f"  ❌ Ocorreu um erro inesperado para o ID {current_id}: {e}")
+            print(f"  ❌ Ocorreu um erro inesperado para o ID {current_id}: {_redact(str(e), api_key)}")
             continue # Pula para o próximo ID
 
     if not all_records:
@@ -116,6 +132,8 @@ def extract_and_save_sra_metadata(sra_ids):
         return
 
     df = pd.DataFrame(all_records)
+    # Neutraliza CSV/formula injection nos campos de texto livre vindos do NCBI.
+    df = df.map(sanitize_csv_value)
     output_filename = os.getenv("OUTPUT_FILE_LIST_METADATA")
     if not output_filename:
         print("Erro: A variável de ambiente 'OUTPUT_FILE_LIST_METADATA' não está definida.")

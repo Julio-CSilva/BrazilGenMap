@@ -15,10 +15,17 @@ if [ ! -f "$input_file" ]; then
 fi
 
 # Loop pelos IDs no arquivo
-for i in $(tr -d '\r' < "$input_file"); do
+while IFS= read -r i; do
+    i="${i//$'\r'/}"
+    [ -n "$i" ] || continue
+    # Valida o ID para evitar path traversal / injeção via nome de arquivo.
+    if ! [[ "$i" =~ ^[A-Za-z0-9_]+$ ]]; then
+        echo "ID inválido ignorado: '$i'" >&2
+        continue
+    fi
 
     output_dir="/path/to/alignment/results/${i}"
-    cd "$output_dir"
+    cd "$output_dir" || { echo "Erro ao entrar no diretório $output_dir" >&2; continue; }
 
     mkdir -p "/path/to/results_callvariants_deepvariants_WGS/${i}"
     echo "Chama de variantes deepvariants, utilizando modelo de WGS usuários já reportaram que o modelo WGS tende a \
@@ -26,7 +33,7 @@ for i in $(tr -d '\r' < "$input_file"); do
     Por padrão, DeepVariant usa todas as bases com qualidade ≥10. Você pode aumentar, por exemplo, para 20:" \
     > /path/to/results_callvariants_deepvariants_WGS/info.txt
 
-    rm "${i}_callVariants_deepvariants.log.txt"
+    rm -f "${i}_callVariants_deepvariants.log.txt"
     log_file="${output_dir}/${i}_callVariants_deepvariants.log.txt"
     echo "[$(date)] Início do processamento da amostra ${i}" | tee -a "$log_file"
     {
@@ -55,4 +62,4 @@ for i in $(tr -d '\r' < "$input_file"); do
     echo "[$(date)] Finalizado o processamento da amostra ${i}" | tee -a "$log_file"
     echo "---------------------------------------" | tee -a "$log_file"
 
-done
+done < "$input_file"

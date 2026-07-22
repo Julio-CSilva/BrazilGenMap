@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 
-for i in $(tr -d '\r' < sra1.txt)
+while IFS= read -r i
 do
+    i="${i//$'\r'/}"
+    [ -n "$i" ] || continue
+    # Valida o ID para evitar path traversal / injeção via nome de arquivo.
+    if ! [[ "$i" =~ ^[A-Za-z0-9_]+$ ]]; then
+        echo "ID inválido ignorado: '$i'" >&2
+        continue
+    fi
+
     output_dir="/create/path/to/results/${i}"
     mkdir -p "$output_dir"
     cd "$output_dir" || { echo "Erro ao entrar no diretório $output_dir"; exit 1; }
@@ -73,4 +81,4 @@ do
     echo "[$(date)] Log finalizado: ${log_file}"
     echo "---------------------------------------"
 
-done
+done < sra1.txt

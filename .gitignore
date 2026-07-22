@@ -2,8 +2,26 @@
 .env
 .env.local
 
-# Generated results
-results/*.csv
+# Generated results — dados genômicos/de pacientes (LGPD), nunca commitar
+results/*
+!results/.gitkeep
+
+# Arquivos de dados genômicos (em qualquer diretório)
+*.vcf
+*.vcf.gz
+*.g.vcf
+*.gvcf
+*.bam
+*.bai
+*.bam.bai
+*.cram
+*.crai
+*.sam
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.plp
 
 # Python
 __pycache__/
