@@ -30,6 +30,10 @@ instituições e pesquisas no Brasil.
   - `mpileup` — Mpileup, uma ferramenta de linha de comando do SAMtools, fornece um relatório sobre a cobertura das reads mapeadas.
 - **annotation/**
   - `annotation_pipeline` — Uma pipeline customizada para anotação funcional dos VCFs gerados.
+- **genes_lists/**
+  - `oncogenes` — Lista de oncogenes utilizada para o mapeamento genômico.
+  - `supressores` — Lista de supressores de tumor utilizada para o mapeamento genômico.
+  - `hallmarks` — Lista de genes Hallmark do câncer utilizada para o mapeamento genômico.
 - **environment.yml** — Definição do ambiente Conda.
 - **.env.example** — Modelo das variáveis de ambiente necessárias.
 
