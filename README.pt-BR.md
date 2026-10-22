@@ -30,10 +30,15 @@ instituições e pesquisas no Brasil.
   - `mpileup` — Mpileup, uma ferramenta de linha de comando do SAMtools, fornece um relatório sobre a cobertura das reads mapeadas.
 - **annotation/**
   - `annotation_pipeline` — Uma pipeline customizada para anotação funcional dos VCFs gerados.
+- **genomic_mapping**
+  - `enrichment_analysis` — Executa uma análise de enriquecimento de vias funcionais das variantes detectadas.
+  - `gene_list_analysis` — Analisa o número de variantes que recaem em genes canônicos do câncer, utilizando as listas de genes disponíveis em "genes_lists".
 - **genes_lists/**
   - `oncogenes.xlsx` — Lista de oncogenes utilizada para o mapeamento genômico, proveniente do Oncogene Database (doi.org/10.1016/j.jgg.2016.12.004).
   - `suppressors.xlsx` — Lista de supressores de tumor utilizada para o mapeamento genômico, proveniente do Tumor Suppressor Genes Database (doi.org/10.1093/nar/gks937).
   - `hallmarks.xlsx` — Lista de genes Hallmark do câncer utilizada para o mapeamento genômico. Conjunto manualmente curado de 1558 de genes hallmark do câncer, atribuídos a 21 vias e montada pelo NanoString Technologies, Seattle/WA.
+- **relatedness_analysis**
+  - `king` — Executa uma análise de parentesco das amostras do estudo a partir dos dados de variantes (VCF).
 - **environment.yml** — Definição do ambiente Conda.
 - **.env.example** — Modelo das variáveis de ambiente necessárias.
 
