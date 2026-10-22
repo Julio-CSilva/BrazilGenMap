@@ -31,9 +31,9 @@ instituições e pesquisas no Brasil.
 - **annotation/**
   - `annotation_pipeline` — Uma pipeline customizada para anotação funcional dos VCFs gerados.
 - **genes_lists/**
-  - `oncogenes` — Lista de oncogenes utilizada para o mapeamento genômico, proveniente do Oncogene Database (doi.org/10.1016/j.jgg.2016.12.004).
-  - `supressores` — Lista de supressores de tumor utilizada para o mapeamento genômico, proveniente do Tumor Suppressor Genes Database (doi.org/10.1093/nar/gks937).
-  - `hallmarks` — Lista de genes Hallmark do câncer utilizada para o mapeamento genômico. Conjunto manualmente curado de 1558 de genes hallmark do câncer, atribuídos a 21 vias e montada pelo NanoString Technologies, Seattle/WA.
+  - `oncogenes.xlsx` — Lista de oncogenes utilizada para o mapeamento genômico, proveniente do Oncogene Database (doi.org/10.1016/j.jgg.2016.12.004).
+  - `suppressors.xlsx` — Lista de supressores de tumor utilizada para o mapeamento genômico, proveniente do Tumor Suppressor Genes Database (doi.org/10.1093/nar/gks937).
+  - `hallmarks.xlsx` — Lista de genes Hallmark do câncer utilizada para o mapeamento genômico. Conjunto manualmente curado de 1558 de genes hallmark do câncer, atribuídos a 21 vias e montada pelo NanoString Technologies, Seattle/WA.
 - **environment.yml** — Definição do ambiente Conda.
 - **.env.example** — Modelo das variáveis de ambiente necessárias.
 
