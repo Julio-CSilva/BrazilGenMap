@@ -30,6 +30,10 @@ and research groups.
   - `mpileup` — Mpileup, a SAMtools command-line tool, provides a summary of the coverage of the mapped reads.
 - **annotation/**
   - `annotation_pipeline` — A customized pipeline for functional annotation of the generated VCFs.
+- **genes_lists/**
+  - `oncogenes.xlsx` — List of oncogenes used for genomic mapping, retrieved from the Oncogene Database (doi.org/10.1016/j.jgg.2016.12.004).
+  - `suppressors.xlsx` — List of tumor suppressor genes used for genomic mapping, retrieved from the Tumor Suppressor Genes Database (doi.org/10.1093/nar/gks937).
+  - `hallmarks.xlsx` — List of Hallmark genes used for genomic mapping. Manually curated list of 1558 cancer hallmark genes assigned to 21 pathways and assembled by NanoString Technologies (Seattle, WA).
 - **environment.yml** — Conda environment definition.
 - **.env.example** — Template for the required environment variables.
 
