@@ -1,0 +1,77 @@
+############################################################################################################################
+
+#### GENE LISTS ANALYSIS ####
+
+setwd("/path/to/variant/data")
+
+# 1. LOADING PACKAGES
+
+library(dplyr)
+library(UpSetR)
+
+# 2. LOADING AND PRE-PROCESSING VARIANT DATA
+
+# Variants data
+my_variants <- variant_data %>% 
+  rename(CHROM = `#CHROM`, REF = REF...4) %>% 
+  mutate(var_id = paste(CHROM, POS, REF, ALT, sep = "_"))
+
+# Gene lists
+
+# Hallmark Genes
+hallmark_genes <- readLines("hallmark.lst")
+hallmark_genes <- toupper(trimws(hallmark_genes))
+
+# Oncogenes
+oncogenes <- readLines("onco.lst")
+oncogenes <- toupper(trimws(oncogenes))
+
+# Suppressors
+suppressors <- readLines("supressores.lst")
+suppressors <- toupper(trimws(suppressors))
+
+# 3. INTERSECTING VARIANTS WITH GENE LISTS
+
+variants_hallmarks <- my_variants %>%
+  filter(Gene.refGene %in% hallmark_genes) %>%
+  pull(var_id)
+
+variants_oncogenes <- my_variants %>%
+  filter(Gene.refGene %in% oncogenes) %>%
+  pull(var_id)
+
+variants_suppressors <- my_variants %>%
+  filter(Gene.refGene %in% supressores) %>%
+  pull(var_id)
+
+# 4. GATHERING ALL INTERSECTIONS
+
+lists_variants <- list(
+  Hallmarks   = variants_hallmarks,
+  Oncogenes   = variants_oncogenes,
+  Suppressors  = variants_suppressors
+)
+
+# 5. PLOTTING THE INTERSECTIONS
+
+upset(
+  fromList(lists_variants),
+  nintersects = NA,
+  order.by = "freq",
+  mainbar.y.label = "Number of Variants",
+  sets.x.label = "Total per Category",
+  main.bar.color = "#87CEFA",
+  sets.bar.color = "#4F94CD",
+  matrix.color = "#104E8B",
+  point.size = 3.5,
+  line.size = 1,
+  text.scale = c(1.8, 1.6, 1.1, 1.1, 1.3, 1.5)
+)
+
+ggsave(
+  filename = "~/projeto_variante/arquivos/gene_lists/Rplot.png",
+  width = 427,
+  height = 367,
+  units = "px",
+  dpi = 300
+)
