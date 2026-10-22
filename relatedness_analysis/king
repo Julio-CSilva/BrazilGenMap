@@ -1,0 +1,11 @@
+echo "Starting analysis with sample VCFs"
+
+tabix -p vcf variants.vcf.gz
+
+bcftools view -r chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22  -v snps  -m2 -M2 -Oz -o result.autossomal.vcf.gz  variants.vcf.gz
+
+tabix -p vcf result.autossomal.vcf.gz
+
+plink2  --vcf result.autossomal.vcf.gz --vcf-half-call missing --make-bed  --out result
+
+king -b result.bed --ibdseg --kinship --prefix result_king
